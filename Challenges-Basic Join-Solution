@@ -1,0 +1,20 @@
+select h.hacker_id, h.name, count(c.challenge_id) as challenges_created 
+from hackers as h
+inner join challenges as c 
+on h.hacker_id=c.hacker_id
+group by h.hacker_id, h.name
+having challenges_created = (
+    select count(challenge_id) from challenges as c2
+    group by c2.hacker_id
+    order by count(challenge_id) desc limit 1)
+or challenges_created in (
+    select c_challenge 
+    from(
+        select h2.hacker_id, h2.name, count(c2.challenge_id) as c_challenge 
+        from hackers as h2 
+        join challenges as c2
+        on h2.hacker_id=c2.hacker_id
+        group by h2.hacker_id, h2.name) temptable /* temptable is a given table name*/ 
+    group by c_challenge 
+    having count(c_challenge)=1)  /* for whom count of challenges equal to 1*/
+order by challenges_created desc, hacker_id;
