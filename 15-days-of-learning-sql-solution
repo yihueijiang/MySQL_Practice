@@ -1,3 +1,11 @@
+thought:
+Edited a bit for clarity. Removed unnecessary parts. There are 4 different sections (separated by a comma/blank-line), which pull the needed information. For 1, you are pulling the submission date from the sub-query at very bottom (sub1), which gives you each distinct submission date.
+For 2, you are counting the number of distinct hackers (from the same base table, but this time listed as sub2), where BOTH the date (from sub2) matches the date in the main query (sub1) - (so basically, how many distinct hackers submitted that day) - AND (they only count towards that total if this condition is also true) the number of distinct submission dates (count them from same base table, but this time as sub3) for each hacker (sub3.hacker_id=sub2.hacker_id) PRIOR to the current date (sub3.submission_date < sub2.submission_date) - matches how many days we are BEYOND the start date (datediff).
+(This is what the question is asking - how many people submitted at least once on each date prior to and including the current one. It isn't worded very well.) On the first day, datediff will be zero (as would the amount of prior submissions), so it will simply list everyone who submitted that day.
+3 is just counting who had the most submissions that day (counting submission_id's as grouped by hacker_id). You sort these desc based on count and then asc (the default, so asc not explicitly needed) by the hacker_id (per instructions). The limit 1 means you just get the top result. You are giving this result the alias HID (so that we can reference it in 4).
+4 is giving you the actual name of the hacker, from the hackers table, where the hacker_id equals the HID that we obtained from 3.
+
+------------------------------------------------------------------------------------------
 SELECT 
     submission_date ,
     (SELECT 
