@@ -1,0 +1,12 @@
+select distinct a.x, a.y from functions a
+    join functions b on 
+    a.x=b.y and 
+    a.y=b.x and 
+    a.x!=a.y and 
+    a.x<a.y
+union
+select x, y from functions f1 where x=y  
+    GROUP BY x, y
+    HAVING COUNT(*) > 1
+order by x;
+
